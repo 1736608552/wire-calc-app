@@ -37,33 +37,37 @@ jobs:
       - name: Prepare APK Package
         run: |
           mkdir -p release-apks
-          find app/build/outputs/apk/release/ -name "*.apk" -exec cp {} release-apks/WireCalc-v1.0.1.apk \;
+          for f in app/build/outputs/apk/release/*.apk; do
+            cp "$f" release-apks/NTC-Silver-Diameter-Calc-v1.0.2.apk
+            cp "$f" release-apks/WireCalc-v1.0.2.apk
+          done
           ls -la release-apks/
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: WireCalc-Android-APK
-          path: release-apks/WireCalc-v1.0.1.apk
+          name: NTC-Silver-Diameter-Calc-APK
+          path: release-apks/*.apk
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: v1.0.1
-          name: "WireCalc v1.0.1 (阻值线径速算器)"
+          tag_name: v1.0.2
+          name: "NTC银面直径计算器 v1.0.2"
           body: |
-            ### ⚡ 阻值线径速算器 (WireCalc) v1.0.1
+            ### ⚡ NTC银面直径计算器 v1.0.2
             
             根据物理原理 $R_1 \times r_1^2 = R_2 \times r_2^2$，输入任意 3 个数，即可自动实时计算出第 4 个数！
 
             #### 🔄 本次更新：
-            - 去除“带入原图示例”按钮，界面更加清爽专注；
-            - 保留清空所有按钮与完整实时四选三速算功能。
+            - **App 正式更名为【NTC银面直径计算器】**；
+            - 彻底去除“带入原图示例”按钮，界面更加清爽专注；
+            - 桌面应用图标、顶栏标题、系统名称同步更新为“NTC银面直径计算器”。
 
             #### 📥 下载安装：
-            - 下载下方附件中的 **`WireCalc-v1.0.1.apk`** 直接在安卓手机上覆盖更新安装即可。
-          files: release-apks/WireCalc-v1.0.1.apk
+            - 点击下方附件中的 **`NTC-Silver-Diameter-Calc-v1.0.2.apk`** 直接在安卓手机上覆盖安装即可。
+          files: release-apks/*.apk
           draft: false
           prerelease: false
         env:

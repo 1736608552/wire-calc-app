@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/primary"
-            app:title="阻值线径速算器"
+            app:title="NTC银面直径计算器"
             app:subtitle="R₁ × r₁² = R₂ × r₂²"
             app:titleTextColor="@android:color/white"
             app:subtitleTextColor="#E0E0E0" />
@@ -240,7 +240,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="📐 物理公式与换算原理"
+                        android:text="📐 NTC 银面直径与阻值计算原理"
                         android:textStyle="bold"
                         android:textSize="14sp"
                         android:textColor="@color/text_main" />
@@ -252,7 +252,7 @@
                         android:lineSpacingExtra="4dp"
                         android:textSize="12sp"
                         android:textColor="@color/text_sub"
-                        android:text="• 原理：导线电阻 R = ρ·L/S，由于截面积 S ∝ r²，在材质与长度不变时，电阻值与直径的平方成反比。\n• 关系等式：R₁ × r₁² = R₂ × r₂²\n• 求 r₂ (原图红圈)：r₂ = √(R₁ × r₁² / R₂)\n• 求 R₂：R₂ = (R₁ × r₁²) / r₂²\n• 求 r₁：r₁ = √(R₂ × r₂² / R₁)\n• 求 R₁：R₁ = (R₂ × r₂²) / r₁²" />
+                        android:text="• 原理：NTC 圆片银电极面积 S ∝ r²，在材质与厚度不变时，电阻值与银面直径的平方成反比。\n• 关系等式：R₁ × r₁² = R₂ × r₂²\n• 求 r₂ (直径2)：r₂ = √(R₁ × r₁² / R₂)\n• 求 R₂ (阻值2)：R₂ = (R₁ × r₁²) / r₂²\n• 求 r₁ (直径1)：r₁ = √(R₂ × r₂² / R₁)\n• 求 R₁ (阻值1)：R₁ = (R₂ × r₂²) / r₁²" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 

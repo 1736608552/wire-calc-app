@@ -1,13 +1,13 @@
-# 阻值线径速算器 (WireCalc App)
+# NTC银面直径计算器 (NTC Silver Diameter Calculator)
 
-> 基于物理公式 $R_1 \times r_1^2 = R_2 \times r_2^2$，输入任意 3 个数，自动计算出第 4 个数！
+> 基于 NTC 热敏电阻圆片银电极电导与面积关系：$R_1 \times r_1^2 = R_2 \times r_2^2$，输入任意 3 个数，自动计算出第 4 个数！
 
 ---
 
 ## 📌 计算原理与四种情况公式
 
-根据导线电阻定律：$R = \rho \cdot \frac{L}{S} = \rho \cdot \frac{L}{\pi (r/2)^2} = \frac{4\rho L}{\pi r^2}$
-在相同材料和长度下，电阻与导线直径的平方成反比：$R \times r^2 = \text{常数}$。
+根据电阻定律：$R = \rho \cdot \frac{L}{S}$，圆片形 NTC 芯片两面为圆形银层电极，截面积 $S \propto r^2$。
+在芯片材料配方与厚度相同时，电阻值与银面电极直径的平方成反比：$R \times r^2 = \text{常数}$。
 
 即等式关系：
 $$R_1 \times r_1^2 = R_2 \times r_2^2$$
