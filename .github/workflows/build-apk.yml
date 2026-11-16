@@ -1,0 +1,70 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build Android Release APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Grant Execute Permission for Gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew assembleRelease --stacktrace
+
+      - name: Prepare APK Package
+        run: |
+          mkdir -p release-apks
+          find app/build/outputs/apk/release/ -name "*.apk" -exec cp {} release-apks/WireCalc-v1.0.0.apk \;
+          ls -la release-apks/
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: WireCalc-Android-APK
+          path: release-apks/WireCalc-v1.0.0.apk
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: github.ref == 'refs/heads/main'
+        with:
+          tag_name: v1.0.0
+          name: "WireCalc v1.0.0 (阻值线径速算器 - 官方发布)"
+          body: |
+            ### ⚡ 阻值线径速算器 (WireCalc) v1.0.0
+            
+            根据物理原理 $R_1 \times r_1^2 = R_2 \times r_2^2$，输入任意 3 个数，即可自动实时计算出第 4 个数！
+
+            #### ✨ 功能特性：
+            - **智能四选三求解**：在阻值1 ($R_1$)、直径1 ($r_1$)、阻值2 ($R_2$)、直径2 ($r_2$) 中任意输入 3 项，自动求出未知项；
+            - **公式步骤回显**：显示推导过程与具体数值带入步骤，一清二楚；
+            - **原图一键带入**：内置截图原图测试数据（54Ω、17.5mm、110Ω，自动计算出 12.261358mm）；
+            - **全端支持**：极轻量安装包，流畅秒开。
+
+            #### 📥 下载安装：
+            - 下载下方附件中的 **`WireCalc-v1.0.0.apk`** 直接在安卓手机上安装即可。
+          files: release-apks/WireCalc-v1.0.0.apk
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

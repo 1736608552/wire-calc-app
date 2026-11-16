@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>阻值线径速算器 - 输入任意3个数得出第4个数</title>
+  <style>
+    :root {
+      --primary: #1976d2;
+      --primary-dark: #0d47a1;
+      --bg: #f4f6f9;
+      --card: #ffffff;
+      --text: #212121;
+      --text-sub: #666666;
+      --result-bg: #e8f5e9;
+      --result-text: #1b5e20;
+      --border: #e0e0e0;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      padding: 16px;
+      min-height: 100vh;
+    }
+    .container {
+      width: 100%;
+      max-width: 480px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+      padding-top: 8px;
+    }
+    .header h1 {
+      font-size: 22px;
+      color: var(--primary-dark);
+      margin-bottom: 6px;
+    }
+    .header p {
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border: 1px solid var(--border);
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .input-group {
+      margin-bottom: 14px;
+    }
+    .input-group:last-child {
+      margin-bottom: 0;
+    }
+    .input-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .input-label span {
+      color: var(--text-sub);
+      font-weight: normal;
+    }
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-wrapper input {
+      width: 100%;
+      padding: 12px 48px 12px 14px;
+      font-size: 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+      transition: border-color 0.2s;
+      background: #fafafa;
+    }
+    .input-wrapper input:focus {
+      border-color: var(--primary);
+      background: #ffffff;
+    }
+    .input-unit {
+      position: absolute;
+      right: 14px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-sub);
+    }
+    .button-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn:active {
+      transform: scale(0.98);
+    }
+    .btn-sample {
+      background: var(--primary);
+      color: white;
+    }
+    .btn-clear {
+      background: #eceff1;
+      color: #455a64;
+    }
+    .result-card {
+      background: var(--result-bg);
+      border: 1.5px solid #a5d6a7;
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+    .result-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--result-text);
+      margin-bottom: 8px;
+    }
+    .result-value {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--result-text);
+      margin-bottom: 10px;
+      word-break: break-all;
+    }
+    .result-formula {
+      font-size: 12px;
+      color: #2e7d32;
+      line-height: 1.6;
+      white-space: pre-line;
+      background: rgba(255,255,255,0.7);
+      padding: 10px;
+      border-radius: 8px;
+    }
+    .btn-copy {
+      margin-top: 10px;
+      background: #2e7d32;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .formula-guide {
+      font-size: 12px;
+      color: var(--text-sub);
+      line-height: 1.6;
+    }
+    .formula-guide code {
+      background: #eef2f6;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--primary-dark);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>⚡ 阻值线径速算器</h1>
+      <p>核心公式：R₁ × r₁² = R₂ × r₂²（输入任意 3 个数）</p>
+    </div>
+
+    <div class="button-row">
+      <button class="btn btn-sample" onclick="loadSample()">📋 带入原图示例</button>
+      <button class="btn btn-clear" onclick="clearAll()">🧹 清空输入</button>
+    </div>
+
+    <!-- 结果卡片 -->
+    <div class="result-card" id="resultCard">
+      <div class="result-title" id="resTitle">待输入</div>
+      <div class="result-value" id="resVal">请填写任意 3 项</div>
+      <div class="result-formula" id="resFormula">提示：留空您想求解的那一项，系统将即时自动计算出结果。</div>
+      <button class="btn-copy" id="btnCopy" style="display:none;" onclick="copyResult()">📋 复制结果数值</button>
+    </div>
+
+    <!-- 参数组 1 -->
+    <div class="card">
+      <div class="card-title">🔵 参数状态 1</div>
+      <div class="input-group">
+        <label class="input-label">阻值 1 (R₁) <span>初始电阻</span></label>
+        <div class="input-wrapper">
+          <input type="number" step="any" id="r1" placeholder="例如: 54" oninput="calculate()">
+          <span class="input-unit">Ω</span>
+        </div>
+      </div>
+      <div class="input-group">
+        <label class="input-label">直径 1 (r₁) <span>初始导线直径</span></label>
+        <div class="input-wrapper">
+          <input type="number" step="any" id="d1" placeholder="例如: 17.5" oninput="calculate()">
+          <span class="input-unit">mm</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 参数组 2 -->
+    <div class="card">
+      <div class="card-title">🟢 参数状态 2</div>
+      <div class="input-group">
+        <label class="input-label">阻值 2 (R₂) <span>目标电阻</span></label>
+        <div class="input-wrapper">
+          <input type="number" step="any" id="r2" placeholder="例如: 110" oninput="calculate()">
+          <span class="input-unit">Ω</span>
+        </div>
+      </div>
+      <div class="input-group">
+        <label class="input-label">直径 2 (r₂) <span>目标导线直径</span></label>
+        <div class="input-wrapper">
+          <input type="number" step="any" id="d2" placeholder="待求解留空" oninput="calculate()">
+          <span class="input-unit">mm</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 原理卡片 -->
+    <div class="card">
+      <div class="card-title" style="color: var(--text);">📐 物理原理与计算公式</div>
+      <div class="formula-guide">
+        <p>• <b>原理</b>：导线电阻 <code>R = ρ·L/S</code>，由于圆面积 <code>S ∝ r²</code>，在材质与长度不变时，阻值与直径的平方成反比：<code>R₁ × r₁² = R₂ × r₂²</code>。</p>
+        <br>
+        <p>• <b>求 直径2 (r₂) [原图红圈]</b>：<br><code>r₂ = √(R₁ × r₁² / R₂)</code></p>
+        <p>• <b>求 阻值2 (R₂)</b>：<br><code>R₂ = (R₁ × r₁²) / r₂²</code></p>
+        <p>• <b>求 直径1 (r₁)</b>：<br><code>r₁ = √(R₂ × r₂² / R₁)</code></p>
+        <p>• <b>求 阻值1 (R₁)</b>：<br><code>R₁ = (R₂ × r₂²) / r₁²</code></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentResultNum = "";
+
+    function loadSample() {
+      document.getElementById('r1').value = "54";
+      document.getElementById('d1').value = "17.5";
+      document.getElementById('r2').value = "110";
+      document.getElementById('d2').value = "";
+      calculate();
+    }
+
+    function clearAll() {
+      document.getElementById('r1').value = "";
+      document.getElementById('d1').value = "";
+      document.getElementById('r2').value = "";
+      document.getElementById('d2').value = "";
+      calculate();
+    }
+
+    function copyResult() {
+      if (currentResultNum) {
+        navigator.clipboard.writeText(currentResultNum).then(() => {
+          alert('已复制到剪贴板: ' + currentResultNum);
+        }).catch(() => {
+          prompt('请手动复制结果：', currentResultNum);
+        });
+      }
+    }
+
+    function calculate() {
+      const sR1 = document.getElementById('r1').value.trim();
+      const sd1 = document.getElementById('d1').value.trim();
+      const sR2 = document.getElementById('r2').value.trim();
+      const sd2 = document.getElementById('d2').value.trim();
+
+      const vR1 = parseFloat(sR1);
+      const vd1 = parseFloat(sd1);
+      const vR2 = parseFloat(sR2);
+      const vd2 = parseFloat(sd2);
+
+      const hasR1 = !isNaN(vR1) && vR1 > 0;
+      const hasd1 = !isNaN(vd1) && vd1 > 0;
+      const hasR2 = !isNaN(vR2) && vR2 > 0;
+      const hasd2 = !isNaN(vd2) && vd2 > 0;
+
+      const titleEl = document.getElementById('resTitle');
+      const valEl = document.getElementById('resVal');
+      const formEl = document.getElementById('resFormula');
+      const btnCopy = document.getElementById('btnCopy');
+
+      const filled = [hasR1, hasd1, hasR2, hasd2].filter(Boolean).length;
+
+      if (filled === 3) {
+        btnCopy.style.display = "inline-block";
+        if (!hasd2) {
+          // 求 d2 (r2)
+          const inside = (vd1 * vd1 * vR1) / vR2;
+          const ans = Math.sqrt(inside);
+          currentResultNum = ans.toFixed(8).replace(/\.?0+$/, '');
+          titleEl.innerText = "🎯 求解目标：直径 2 (r₂)";
+          valEl.innerText = currentResultNum + " mm";
+          formEl.innerText = `计算公式：r₂ = √(R₁ × r₁² / R₂)\n` +
+                             `代入数值：√(${vR1} × ${vd1}² / ${vR2})\n` +
+                             `开方内部：√(${inside.toFixed(6)})\n` +
+                             `最终结果：≈ ${currentResultNum} mm`;
+        } else if (!hasR2) {
+          // 求 R2
+          const ans = (vR1 * vd1 * vd1) / (vd2 * vd2);
+          currentResultNum = ans.toFixed(8).replace(/\.?0+$/, '');
+          titleEl.innerText = "🎯 求解目标：阻值 2 (R₂)";
+          valEl.innerText = currentResultNum + " Ω";
+          formEl.innerText = `计算公式：R₂ = (R₁ × r₁²) / r₂²\n` +
+                             `代入数值：(${vR1} × ${vd1}²) / ${vd2}²\n` +
+                             `最终结果：≈ ${currentResultNum} Ω`;
+        } else if (!hasd1) {
+          // 求 d1 (r1)
+          const inside = (vd2 * vd2 * vR2) / vR1;
+          const ans = Math.sqrt(inside);
+          currentResultNum = ans.toFixed(8).replace(/\.?0+$/, '');
+          titleEl.innerText = "🎯 求解目标：直径 1 (r₁)";
+          valEl.innerText = currentResultNum + " mm";
+          formEl.innerText = `计算公式：r₁ = √(R₂ × r₂² / R₁)\n` +
+                             `代入数值：√(${vR2} × ${vd2}² / ${vR1})\n` +
+                             `开方内部：√(${inside.toFixed(6)})\n` +
+                             `最终结果：≈ ${currentResultNum} mm`;
+        } else {
+          // 求 R1
+          const ans = (vR2 * vd2 * vd2) / (vd1 * vd1);
+          currentResultNum = ans.toFixed(8).replace(/\.?0+$/, '');
+          titleEl.innerText = "🎯 求解目标：阻值 1 (R₁)";
+          valEl.innerText = currentResultNum + " Ω";
+          formEl.innerText = `计算公式：R₁ = (R₂ × r₂²) / r₁²\n` +
+                             `代入数值：(${vR2} × ${vd2}²) / ${vd1}²\n` +
+                             `最终结果：≈ ${currentResultNum} Ω`;
+        }
+      } else if (filled === 4) {
+        btnCopy.style.display = "none";
+        const left = vR1 * vd1 * vd1;
+        const right = vR2 * vd2 * vd2;
+        const diff = Math.abs(left - right);
+        const errPercent = left !== 0 ? ((diff / left) * 100).toFixed(4) : "0";
+        titleEl.innerText = "🔍 4 项均已填写";
+        valEl.innerText = `相对误差: ${errPercent}%`;
+        formEl.innerText = `等式验证：\n左边 (R₁·r₁²) = ${left.toFixed(4)}\n右边 (R₂·r₂²) = ${right.toFixed(4)}\n如需计算某项，请清空该输入框。`;
+      } else {
+        btnCopy.style.display = "none";
+        titleEl.innerText = "待输入";
+        valEl.innerText = `已填 ${filled} 项，还差 ${3 - filled} 项`;
+        formEl.innerText = "提示：输入任意 3 个数，留空的那个数就会自动算出！";
+      }
+    }
+
+    // 页面加载默认带入示例
+    loadSample();
+  </script>
+</body>
+</html>
