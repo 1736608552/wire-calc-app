@@ -41,17 +41,6 @@ class MainActivity : AppCompatActivity() {
         binding.etR2.doAfterTextChanged { watcher(it) }
         binding.etR2Diameter.doAfterTextChanged { watcher(it) }
 
-        binding.btnLoadSample.setOnClickListener {
-            isUpdating = true
-            binding.etR1.setText("54")
-            binding.etR1Diameter.setText("17.5")
-            binding.etR2.setText("110")
-            binding.etR2Diameter.setText("")
-            isUpdating = false
-            calculate()
-            Toast.makeText(this, "已载入原图示例数据", Toast.LENGTH_SHORT).show()
-        }
-
         binding.btnClear.setOnClickListener {
             isUpdating = true
             binding.etR1.setText("")
