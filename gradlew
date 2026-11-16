@@ -2,13 +2,10 @@
 #
 # Gradle start up script for POSIX systems
 #
-DEFAULT_JVM_OPTS='"-Xmx64m" "-Xms64m"'
+DEFAULT_JVM_OPTS="-Xmx64m -Xms64m"
 
 APP_BASE_NAME=`basename "$0"`
 APP_HOME="`pwd -P`"
-
-# Use the maximum available, or set MAX_FD to -1 to use the system default
-MAX_FD="maximum"
 
 warn () {
     echo "$*"
@@ -36,6 +33,6 @@ else
     which java >/dev/null 2>&1 || die "ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH."
 fi
 
-CLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar
+CLASSPATH="$APP_HOME/gradle/wrapper/gradle-wrapper.jar"
 
 exec "$JAVACMD" $DEFAULT_JVM_OPTS $JAVA_OPTS -jar "$CLASSPATH" "$@"
