@@ -16,247 +16,544 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/primary"
-            app:title="NTC银面直径计算器"
-            app:subtitle="R₁ × r₁² = R₂ × r₂²"
+            app:title="NTC银面与边长计算器"
+            app:subtitle="输入任意 3 个数，第 4 个直接显示结果"
             app:titleTextColor="@android:color/white"
             app:subtitleTextColor="#E0E0E0" />
-    </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <LinearLayout
+        <!-- 顶部核心分类切换：圆片 / 方片 -->
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:background="@color/primary"
+            app:tabTextColor="#B3E5FC"
+            app:tabSelectedTextColor="@android:color/white"
+            app:tabIndicatorColor="@android:color/white"
+            app:tabIndicatorHeight="3dp"
+            app:tabMode="fixed">
 
-            <!-- 顶部快捷操作栏 -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnClear"
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⚪ 圆片计算" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⬜ 方片计算" />
+        </com.google.android.material.tabs.TabLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <!-- ==================== 1. 圆片计算视图 ==================== -->
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/layoutCircle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            android:visibility="visible">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:text="清空所有"
-                app:icon="@android:drawable/ic_menu_close_clear_cancel"
-                style="@style/Widget.Material3.Button.OutlinedButton" />
+                android:orientation="vertical">
 
-            <!-- 输入卡片：状态1 -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                app:cardElevation="2dp"
-                app:cardCornerRadius="12dp"
-                app:cardBackgroundColor="@color/card_bg">
-
+                <!-- 顶部操作栏 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="参数组 1 (原始状态)"
-                        android:textStyle="bold"
-                        android:textSize="15sp"
-                        android:textColor="@color/primary"
-                        android:layout_marginBottom="12dp" />
-
-                    <!-- R1 输入框 -->
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/layoutR1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
-                        android:hint="阻值 1 (R₁)"
-                        app:suffixText="Ω"
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etR1"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="numberDecimal"
-                            android:textSize="16sp" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <!-- r1 输入框 -->
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/layoutR1Diameter"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="直径 1 (r₁)"
-                        app:suffixText="mm"
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etR1Diameter"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="numberDecimal"
-                            android:textSize="16sp" />
-                    </com.google.android.material.textfield.TextInputLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- 输入卡片：状态2 -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardElevation="2dp"
-                app:cardCornerRadius="12dp"
-                app:cardBackgroundColor="@color/card_bg">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="参数组 2 (目标状态)"
-                        android:textStyle="bold"
-                        android:textSize="15sp"
-                        android:textColor="@color/primary"
-                        android:layout_marginBottom="12dp" />
-
-                    <!-- R2 输入框 -->
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/layoutR2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
-                        android:hint="阻值 2 (R₂)"
-                        app:suffixText="Ω"
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etR2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="numberDecimal"
-                            android:textSize="16sp" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <!-- r2 输入框 -->
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/layoutR2Diameter"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="直径 2 (r₂)"
-                        app:suffixText="mm"
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etR2Diameter"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="numberDecimal"
-                            android:textSize="16sp" />
-                    </com.google.android.material.textfield.TextInputLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- 动态结果展示卡片 -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardResult"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardElevation="3dp"
-                app:cardCornerRadius="12dp"
-                app:cardBackgroundColor="@color/result_card">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:id="@+id/tvResultTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="计算结果"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:textColor="@color/result_text" />
-
-                    <TextView
-                        android:id="@+id/tvResultValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:text="请在上方输入任意 3 个数"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/result_text" />
-
-                    <TextView
-                        android:id="@+id/tvResultFormula"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="留空要计算的项，系统将自动算出"
+                        android:layout_weight="1"
+                        android:text="⚪ 圆片：填3项，第4项自动出结果"
                         android:textSize="13sp"
-                        android:lineSpacingExtra="3dp"
-                        android:textColor="#388E3C" />
+                        android:textStyle="bold"
+                        android:textColor="@color/primary" />
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnCopyResult"
+                        android:id="@+id/btnClearCircle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:visibility="gone"
-                        android:text="复制计算结果"
-                        app:icon="@android:drawable/ic_menu_agenda"
-                        style="@style/Widget.Material3.Button.TonalButton" />
+                        android:text="清空"
+                        android:textColor="#D32F2F"
+                        app:strokeColor="#FFCDD2"
+                        app:iconTint="#D32F2F"
+                        app:icon="@android:drawable/ic_menu_close_clear_cancel"
+                        style="@style/Widget.Material3.Button.OutlinedButton" />
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
 
-            <!-- 底部原理与公式卡片 -->
-            <com.google.android.material.card.MaterialCardView
+                <!-- 参数组 1 -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    app:cardElevation="2dp"
+                    app:cardCornerRadius="14dp"
+                    app:cardBackgroundColor="@color/card_bg">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="参数状态 1 (原始圆片规格)"
+                            android:textStyle="bold"
+                            android:textSize="15sp"
+                            android:textColor="@color/primary"
+                            android:layout_marginBottom="12dp" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/layoutR1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="14dp"
+                            android:hint="⚡ 阻值 1 (R₁) - 单位: Ω"
+                            app:suffixText="Ω"
+                            app:helperTextEnabled="true"
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etR1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="numberDecimal"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/layoutR1Diameter"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="📏 银面直径 1 (r₁) - 单位: mm"
+                            app:suffixText="mm"
+                            app:helperTextEnabled="true"
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etR1Diameter"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="numberDecimal"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- 参数组 2 -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardElevation="2dp"
+                    app:cardCornerRadius="14dp"
+                    app:cardBackgroundColor="@color/card_bg">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="参数状态 2 (目标圆片规格)"
+                            android:textStyle="bold"
+                            android:textSize="15sp"
+                            android:textColor="@color/primary"
+                            android:layout_marginBottom="12dp" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/layoutR2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="14dp"
+                            android:hint="⚡ 阻值 2 (R₂) - 单位: Ω"
+                            app:suffixText="Ω"
+                            app:helperTextEnabled="true"
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etR2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="numberDecimal"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/layoutR2Diameter"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="📏 银面直径 2 (r₂) - 单位: mm"
+                            app:suffixText="mm"
+                            app:helperTextEnabled="true"
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etR2Diameter"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="numberDecimal"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- 结果卡片 -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardResultCircle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardElevation="3dp"
+                    app:cardCornerRadius="14dp"
+                    app:cardBackgroundColor="@color/result_card">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:id="@+id/tvCircleResultTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="计算结果"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:textColor="@color/result_text" />
+
+                        <TextView
+                            android:id="@+id/tvCircleResultValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:layout_marginBottom="6dp"
+                            android:text="请在上方输入任意 3 个数"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/result_text" />
+
+                        <TextView
+                            android:id="@+id/tvCircleResultFormula"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="留空哪一项，系统直接将算出的第 4 个数填入对应框内！"
+                            android:textSize="13sp"
+                            android:lineSpacingExtra="3dp"
+                            android:textColor="#388E3C" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- 底部公式说明 -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    app:cardElevation="1dp"
+                    app:cardCornerRadius="14dp"
+                    app:cardBackgroundColor="@color/card_bg">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="📐 圆片物理原理"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:textColor="@color/text_main" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:lineSpacingExtra="4dp"
+                            android:textSize="12sp"
+                            android:textColor="@color/text_sub"
+                            android:text="• 原理：截面积 S ∝ r²，在材质与厚度不变时，电阻值与直径平方成反比。\n• 关系等式：R₁ × r₁² = R₂ × r₂²" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <!-- ==================== 2. 方片计算视图 ==================== -->
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/layoutSquare"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            android:visibility="gone">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                app:cardElevation="1dp"
-                app:cardCornerRadius="12dp"
-                app:cardBackgroundColor="@color/card_bg">
+                android:orientation="vertical">
 
+                <!-- 顶部操作栏 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
 
                     <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="⬜ 方片：边长 = √(阻值1 × πr₁² / 阻值2)"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="#2E7D32" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnClearSquare"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="📐 NTC 银面直径与阻值计算原理"
-                        android:textStyle="bold"
-                        android:textSize="14sp"
-                        android:textColor="@color/text_main" />
+                        android:text="清空"
+                        android:textColor="#D32F2F"
+                        app:strokeColor="#FFCDD2"
+                        app:iconTint="#D32F2F"
+                        app:icon="@android:drawable/ic_menu_close_clear_cancel"
+                        style="@style/Widget.Material3.Button.OutlinedButton" />
+                </LinearLayout>
 
-                    <TextView
+                <!-- 参数组 1：原始状态 -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    app:cardElevation="2dp"
+                    app:cardCornerRadius="14dp"
+                    app:cardBackgroundColor="@color/card_bg">
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:lineSpacingExtra="4dp"
-                        android:textSize="12sp"
-                        android:textColor="@color/text_sub"
-                        android:text="• 原理：NTC 圆片银电极面积 S ∝ r²，在材质与厚度不变时，电阻值与银面直径的平方成反比。\n• 关系等式：R₁ × r₁² = R₂ × r₂²\n• 求 r₂ (直径2)：r₂ = √(R₁ × r₁² / R₂)\n• 求 R₂ (阻值2)：R₂ = (R₁ × r₁²) / r₂²\n• 求 r₁ (直径1)：r₁ = √(R₂ × r₂² / R₁)\n• 求 R₁ (阻值1)：R₁ = (R₂ × r₂²) / r₁²" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="参数状态 1 (原始圆片/基准规格)"
+                            android:textStyle="bold"
+                            android:textSize="15sp"
+                            android:textColor="@color/primary"
+                            android:layout_marginBottom="12dp" />
+
+                        <!-- Sq R1 输入框 -->
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/layoutSqR1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="14dp"
+                            android:hint="⚡ 阻值 1 (阻值1) - 单位: Ω"
+                            app:suffixText="Ω"
+                            app:helperTextEnabled="true"
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etSqR1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="numberDecimal"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <!-- Sq r1 输入框 -->
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/layoutSqR1Radius"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="📏 圆半径 1 (r₁) - 单位: mm"
+                            app:suffixText="mm"
+                            app:helperTextEnabled="true"
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etSqR1Radius"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="numberDecimal"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- 参数组 2：方片目标状态 -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardElevation="2dp"
+                    app:cardCornerRadius="14dp"
+                    app:cardBackgroundColor="@color/card_bg">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="参数状态 2 (目标方片规格)"
+                            android:textStyle="bold"
+                            android:textSize="15sp"
+                            android:textColor="#2E7D32"
+                            android:layout_marginBottom="12dp" />
+
+                        <!-- Sq R2 输入框 -->
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/layoutSqR2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="14dp"
+                            android:hint="⚡ 阻值 2 (阻值2) - 单位: Ω"
+                            app:suffixText="Ω"
+                            app:helperTextEnabled="true"
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etSqR2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="numberDecimal"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <!-- 方片边长 输入框 -->
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/layoutSqSide"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="📐 方片边长 (边长) - 单位: mm"
+                            app:suffixText="mm"
+                            app:helperTextEnabled="true"
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etSqSide"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="numberDecimal"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- 方片结果展示卡片 -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardResultSquare"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardElevation="3dp"
+                    app:cardCornerRadius="14dp"
+                    app:cardBackgroundColor="@color/result_card">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:id="@+id/tvSquareResultTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="方片计算结果"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:textColor="@color/result_text" />
+
+                        <TextView
+                            android:id="@+id/tvSquareResultValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:layout_marginBottom="6dp"
+                            android:text="请在上方输入任意 3 个数"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/result_text" />
+
+                        <TextView
+                            android:id="@+id/tvSquareResultFormula"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="输入任意 3 个数，第 4 个数将直接填入对应的输入框！"
+                            android:textSize="13sp"
+                            android:lineSpacingExtra="3dp"
+                            android:textColor="#388E3C" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- 方片公式原理卡片 -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    app:cardElevation="1dp"
+                    app:cardCornerRadius="14dp"
+                    app:cardBackgroundColor="@color/card_bg">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="📐 方片手写公式原理"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:textColor="@color/text_main" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:lineSpacingExtra="4dp"
+                            android:textSize="12sp"
+                            android:textColor="@color/text_sub"
+                            android:text="• 手写公式：边长 = √(阻值1 × πr₁² / 阻值2)\n• 关系等式：阻值1 × (πr₁²) = 阻值2 × 边长²\n• 原理：圆电极面积为 πr₁²，方电极面积为 边长²。在材质配方与厚度相同条件下，电极面积与阻值成反比。" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+    </FrameLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

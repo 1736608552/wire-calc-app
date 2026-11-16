@@ -38,8 +38,8 @@ jobs:
         run: |
           mkdir -p release-apks
           for f in app/build/outputs/apk/release/*.apk; do
-            cp "$f" release-apks/NTC-Silver-Diameter-Calc-v1.0.2.apk
-            cp "$f" release-apks/WireCalc-v1.0.2.apk
+            cp "$f" release-apks/NTC-Silver-Diameter-Calc-v1.1.0.apk
+            cp "$f" release-apks/NTC-Calc-v1.1.0.apk
           done
           ls -la release-apks/
 
@@ -53,20 +53,22 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: v1.0.2
-          name: "NTC银面直径计算器 v1.0.2"
+          tag_name: v1.1.0
+          name: "NTC银面与边长计算器 v1.1.0 (新增方片分类)"
           body: |
-            ### ⚡ NTC银面直径计算器 v1.0.2
-            
-            根据物理原理 $R_1 \times r_1^2 = R_2 \times r_2^2$，输入任意 3 个数，即可自动实时计算出第 4 个数！
+            ### ⚡ NTC计算器 v1.1.0 (新增方片分类与自动填入)
 
-            #### 🔄 本次更新：
-            - **App 正式更名为【NTC银面直径计算器】**；
-            - 彻底去除“带入原图示例”按钮，界面更加清爽专注；
-            - 桌面应用图标、顶栏标题、系统名称同步更新为“NTC银面直径计算器”。
+            #### 🌟 核心升级特性：
+            1. **双分类页面自由切换**：
+               - **⚪【圆片计算】**：原版经典功能，公式 $R_1 \times r_1^2 = R_2 \times r_2^2$；
+               - **⬜【方片计算】**：全新加入手写公式 $\text{边长} = \sqrt{\frac{\text{阻值1} \times \pi r_1^2}{\text{阻值2}}}$；
+            2. **第 4 项直接填入结果**：
+               - 无论是圆片还是方片，任意输入 3 个数值，留空的那个输入框**直接自动显示出算好的数值**，并亮起绿色高亮，直观无需往下滑动；
+            3. **防止填错防串行优化**：
+               - 阻值 (Ω) 与 直径/边长 (mm) 带有明确图标与单位提示。
 
             #### 📥 下载安装：
-            - 点击下方附件中的 **`NTC-Silver-Diameter-Calc-v1.0.2.apk`** 直接在安卓手机上覆盖安装即可。
+            - 点击下方附件中的 **`NTC-Silver-Diameter-Calc-v1.1.0.apk`** 直接在安卓手机上覆盖安装即可。
           files: release-apks/*.apk
           draft: false
           prerelease: false
